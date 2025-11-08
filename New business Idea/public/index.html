@@ -2613,8 +2613,7 @@ footer {
             // Default response
             return "I can help you with information about fees, exams, events, resources, attendance, and more. What would you like to know?";
         }
-
-        // Admin functions
+          // Admin functions
         function openAdminPanel() {
             document.getElementById('adminModal').classList.add('active');
         }
@@ -2653,13 +2652,45 @@ footer {
                 timestamp: Date.now()
             };
 
-            schoolData.notices.unshift(notice);
-            await saveData();
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Try to publish to backend
+                try {
+                    const resp = await fetch('/api/notices', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ title, content })
+                    });
+                        
+                    if (resp.ok) {
+                        const created = await resp.json();
+                        // Prepend created notice (backend will include timestamp/id)
+                        schoolData.notices.unshift(created);
+                        await saveData();
+                        showNotification('Notice published successfully!');
+                        closeAdminPanel();
+                        loadNotices();
+                    } else {
+                        const data = await resp.json().catch(() => ({}));
+                        showNotification(data.message || 'Failed to publish notice (server)', 'error');
+                    }
+                } catch (err) {
+                    console.error('Error publishing notice to backend:', err);
+                    showNotification('Error publishing notice to backend', 'error');
+                }
+            } else {
+                // Local fallback
+                schoolData.notices.unshift(notice);
+                await saveData();
 
-            showNotification('Notice published successfully!');
-            closeAdminPanel();
-            loadNotices();
-            
+                showNotification('Notice published locally (not synced)');
+                closeAdminPanel();
+                loadNotices();
+            }
+
             document.getElementById('noticeTitle').value = '';
             document.getElementById('noticeContent').value = '';
         }
@@ -2789,3 +2820,6 @@ footer {
     <script src="js/api.js"></script>
 </body>
 </html>
+
+
+        
