@@ -93,6 +93,40 @@ nav {
     align-items: center;
 }
 
+    /* Hamburger and responsive nav */
+    .hamburger {
+        display: none;
+        background: transparent;
+        border: none;
+        color: var(--white);
+        font-size: 1.4rem;
+        padding: 0.5rem;
+        cursor: pointer;
+    }
+
+    /* Mobile nav when toggled */
+    body.nav-open .nav-links {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 260px;
+        background: linear-gradient(180deg, rgba(10,30,66,0.98), rgba(10,30,66,0.98));
+        flex-direction: column;
+        gap: 1.2rem;
+        padding: 4rem 1.5rem;
+        box-shadow: -6px 0 30px rgba(0,0,0,0.3);
+        transform: translateX(0);
+        z-index: 1100;
+    }
+
+    body.nav-open .nav-links a {
+        color: var(--white);
+        font-size: 1.05rem;
+        padding: 0.6rem 0.8rem;
+        display: block;
+    }
+
 .nav-links a {
     color: var(--white);
     text-decoration: none;
@@ -168,6 +202,9 @@ nav {
     z-index: 1;
     animation: fadeInUp 1s ease;
 }
+
+    /* Small utility to ensure nav overlay sits above hero and other elements */
+    body.nav-open header { z-index: 1200; }
 
 .hero h1 {
     font-size: 4rem;
@@ -1191,6 +1228,10 @@ footer {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .hamburger { display: inline-flex; align-items:center; justify-content:center; }
+    .nav-links { display: none; }
+    body.nav-open .nav-links { display: flex; }
+
     .about-content,
     .contact-content {
         grid-template-columns: 1fr;
@@ -1237,6 +1278,7 @@ footer {
                 <div class="logo-placeholder"></div>
                 <span>Mbizo High School</span>
             </div>
+                <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" onclick="toggleNav()">☰</button>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -1963,6 +2005,36 @@ footer {
             document.getElementById('backBtn').style.display = 'none';
             window.scrollTo(0, 0);
         }
+
+        // Responsive nav toggle
+        function toggleNav() {
+            const isOpen = document.body.classList.toggle('nav-open');
+            const btn = document.querySelector('.hamburger');
+            if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+
+        function closeNav() {
+            document.body.classList.remove('nav-open');
+            const btn = document.querySelector('.hamburger');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+
+        // Close nav when a nav link is clicked (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                a.addEventListener('click', function() {
+                    closeNav();
+                });
+            });
+            // Close nav on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeNav();
+            });
+            // Close nav when window is resized to larger screens
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) closeNav();
+            });
+        });
 
     // Attendance functions
         // Helper: render a student card (used for API and local fallback)
@@ -2717,3 +2789,4 @@ footer {
     <script src="js/api.js"></script>
 </body>
 </html>
+
