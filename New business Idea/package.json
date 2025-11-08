@@ -8,7 +8,7 @@
   "dev": "nodemon server.js",
   "test": "echo \"Error: no test specified\" && exit 1",
   "build": "echo \"No build step needed\""
-}
+}, 
 
   "keywords": [
     "school",
@@ -36,3 +36,4 @@
   }
 
 }
+
