@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mbizo High School - Login</title>
+    <style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a1e42 0%, #1a3a6b 100%);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+}
+
+.logo-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo-placeholder {
+    width: 80px;
+    height: 80px;
+    background: url('/Mbizo High Logo.jpeg');
+    background-size: contain;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+}
+
+.school-name {
+    color: #0a1e42;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.tagline {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #0a1e42;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #d4af37;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #d4af37;
+    color: #0a1e42;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #0a1e42;
+    color: #d4af37;
+    transform: translateY(-2px);
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.register-link a {
+    color: #0a1e42;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    color: #d4af37;
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 0.8rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 0.8rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    color: #666;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    background: #f8f9fa;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    background: white;
+    border-bottom: 2px solid #d4af37;
+    color: #0a1e42;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.register-form .form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.register-form .form-row .form-group {
+    flex: 1;
+}
+
+@media (max-width: 480px) {
+    .register-form .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-placeholder"></div>
+            <div class="school-name">Mbizo High School</div>
+            <div class="tagline">Smart Education Platform</div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        <div class="loading" id="loading">Please wait...</div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">Login</div>
+            <div class="tab" onclick="switchTab('register')">Register</div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginTab" class="tab-content active">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerTab" class="tab-content">
+            <form id="registerForm" class="register-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regUsername">Username</label>
+                        <input type="text" id="regUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPhone">Phone</label>
+                        <input type="tel" id="regPhone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="regRole">Role</label>
+                    <select id="regRole" required onchange="toggleStudentFields()">
+                        <option value="">Select Role</option>
+                        <option value="student">Student</option>
+                        <option value="parent">Parent</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                </div>
+                <div id="studentFields" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentId">Student ID</label>
+                            <input type="text" id="studentId">
+                        </div>
+                        <div class="form-group">
+                            <label for="studentClass">Class</label>
+                            <select id="studentClass">
+                                <option value="">Select Class</option>
+                                <option value="form1a">Form 1A</option>
+                                <option value="form1b">Form 1B</option>
+                                <option value="form1c">Form 1C</option>
+                                <option value="form1d">Form 1D</option>
+                                <option value="form1e">Form 1E</option>
+                                <option value="form1f">Form 1F</option>
+                                <option value="form1g">Form 1G</option>
+                                <option value="form1h">Form 1H</option>
+                                <option value="form1i">Form 1I</option>
+                                <option value="form1j">Form 1J</option>
+                                <option value="form2a">Form 2A</option>
+                                <option value="form2b">Form 2B</option>
+                                <option value="form2c">Form 2C</option>
+                                <option value="form2d">Form 2D</option>
+                                <option value="form2e">Form 2E</option>
+                                <option value="form2f">Form 2F</option>
+                                <option value="form2g">Form 2G</option>
+                                <option value="form2h">Form 2H</option>
+                                <option value="form2i">Form 2I</option>
+                                <option value="form2j">Form 2J</option>
+                                <option value="form3a">Form 3A</option>
+                                <option value="form3b">Form 3B</option>
+                                <option value="form3c">Form 3C</option>
+                                <option value="form3d">Form 3D</option>
+                                <option value="form3e">Form 3E</option>
+                                <option value="form3f">Form 3F</option>
+                                <option value="form3g">Form 3G</option>
+                                <option value="form3h">Form 3H</option>
+                                <option value="form3i">Form 3I</option>
+                                <option value="form3j">Form 3J</option>
+                                <option value="form4a">Form 4A</option>
+                                <option value="form4b">Form 4B</option>
+                                <option value="form4c">Form 4C</option>
+                                <option value="form4d">Form 4D</option>
+                                <option value="form4e">Form 4E</option>
+                                <option value="form4f">Form 4F</option>
+                                <option value="form4g">Form 4G</option>
+                                <option value="form4h">Form 4H</option>
+                                <option value="form4i">Form 4I</option>
+                                <option value="form4j">Form 4J</option>
+                                <option value="l6">Lower 6</option>
+                                <option value="u6">Upper 6</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">Register</button>
+            </form>
+        </div>
+
+        <div class="register-link">
+            <a href="index.html">← Back to Main Site</a>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+
+        function switchTab(tab) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            // Add active class to selected tab
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`${tab}Tab`).classList.add('active');
+        }
+
+        function toggleStudentFields() {
+            const role = document.getElementById('regRole').value;
+            const studentFields = document.getElementById('studentFields');
+            studentFields.style.display = role === 'student' ? 'block' : 'none';
+        }
+
+        function showMessage(message, type) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(true);
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showMessage('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    showMessage(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // Register form submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(true);
+
+            const formData = {
+                username: document.getElementById('regUsername').value,
+                password: document.getElementById('regPassword').value,
+                role: document.getElementById('regRole').value,
+                name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                phone: document.getElementById('regPhone').value
+            };
+
+            if (formData.role === 'student') {
+                formData.studentId = document.getElementById('studentId').value;
+                formData.class = document.getElementById('studentClass').value;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('Registration successful! You can now login.', 'success');
+                    setTimeout(() => {
+                        switchTab('login');
+                    }, 2000);
+                } else {
+                    showMessage(data.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
